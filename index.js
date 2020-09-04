@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+app.use(express.json());
+
 let notes = [
     {
         id: 1,
@@ -22,17 +24,31 @@ let notes = [
     }
 ];
 
-
-app.get('/api/notes/:id', (request, response) => {
-    const id = Number(request.params.id);
-    const note = notes.find(note => note.id === id);
-
-    note ? response.json(note) : response.status(404).end();
-})
-
 app.get('/api/notes', (req, res) => {
     res.json(notes)
 });
+
+app.get('/api/notes/:id', (req, res) => {
+    const id = Number(req.params.id);
+    const note = notes.find(note => note.id === id);
+
+    note ? res.json(note) : res.status(404).end();
+})
+
+app.post('/api/notes', (req, res) => {
+    const note = req.body;
+    console.log(note);
+
+    res.json(note);
+});
+
+app.delete('/api/notes/:id', (req, res) => {
+    const id = Number(req.params.id);
+    notes = notes.filter(note => note.id !== id);
+
+    res.status(204).end();
+})
+
 
 const PORT = 3001;
 app.listen(PORT, () => {
